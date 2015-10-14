@@ -46,8 +46,8 @@ describe('React Router Context Test', function() {
   var React, Router, TestUtils, stubContext, TestHandler;
 
   beforeEach(function() {
-    React = require.requireActual('react/addons');
-    TestUtils = React.addons.TestUtils;
+    React = require.requireActual('react');
+    TestUtils = require.requireActual('react-addons-test-utils');
     stubContext = require.requireActual('react-stub-context');
     TestHandler = require('..');
     Router = function() {}

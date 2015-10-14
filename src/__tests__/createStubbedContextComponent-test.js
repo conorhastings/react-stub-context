@@ -1,11 +1,20 @@
 jest.dontMock('../');
 
 describe('createStubbedContextcomponent', function() {
-  var React, TestUtils, TestComponent, createStubbedContextComponent;
+  var React, ReactDOM, TestUtils, TestComponent, createStubbedContextComponent;
+
+  function getInternalContext(component) {
+    if (React.version.split('.')[1] > 13) {
+      return component._owner._renderedComponent._context
+    } else {
+      return component._context
+    }
+  }
 
   beforeEach(function() {
-    React = require.requireActual('react/addons');
-    TestUtils = React.addons.TestUtils;
+    React = require.requireActual('react');
+    ReactDOM = require.requireActual('react-dom');
+    TestUtils = require.requireActual('react-addons-test-utils');
     TestComponent = React.createClass({ render: function() { return null; }});
     createStubbedContextComponent = require('../');
   })
@@ -53,8 +62,8 @@ describe('createStubbedContextcomponent', function() {
     var StubbedContextComponent = createStubbedContextComponent(TestComponent, { taylor: 'swift' });
     var stubbedContextComponentElement = TestUtils.renderIntoDocument(<StubbedContextComponent />);
 
-    expect(stubbedContextComponentElement.getWrappedElement()._context.taylor).toEqual('swift');
-    expect(stubbedContextComponentElement.getWrappedParentElement()._context.taylor).toEqual('swift');
+    expect(getInternalContext(stubbedContextComponentElement.getWrappedElement()).taylor).toEqual('swift');
+    expect(getInternalContext(stubbedContextComponentElement.getWrappedParentElement()).taylor).toEqual('swift');
   });
 
   it('Hooks up context on target component correctly', function() {
@@ -67,8 +76,8 @@ describe('createStubbedContextcomponent', function() {
     var StubbedContextComponent = createStubbedContextComponent(TestComponent, { taylor: 'swift' });
     var stubbedContextComponentElement = TestUtils.renderIntoDocument(<StubbedContextComponent />);
 
-    expect(stubbedContextComponentElement.getWrappedElement()._context.taylor).toEqual('swift');
-    expect(stubbedContextComponentElement.getDOMNode().innerHTML).toEqual('swift');
+    expect(getInternalContext(stubbedContextComponentElement.getWrappedElement()).taylor).toEqual('swift');
+    expect(ReactDOM.findDOMNode(stubbedContextComponentElement).innerHTML).toEqual('swift');
   });
 
   it('Passes through props to target component correctly', function() {
@@ -81,7 +90,7 @@ describe('createStubbedContextcomponent', function() {
     var StubbedContextComponent = createStubbedContextComponent(TestComponent);
     var stubbedContextComponentElement = TestUtils.renderIntoDocument(<StubbedContextComponent red="Fearless" />);
 
-    expect(stubbedContextComponentElement.getDOMNode().innerHTML).toEqual('Fearless');
+    expect(ReactDOM.findDOMNode(stubbedContextComponentElement).innerHTML).toEqual('Fearless');
   })
 });
 

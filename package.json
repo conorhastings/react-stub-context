@@ -1,5 +1,5 @@
 {
-  "name": "react-stub-context",
+  "name": "react-context-stub",
   "version": "0.4.0",
   "description": "Stub context for a component, to be used for testing purposes.",
   "main": "dist/index.js",
